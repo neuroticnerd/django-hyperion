@@ -10,10 +10,10 @@
         <title>YOUR PROJECT TITLE HERE</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
         <link rel="apple-touch-icon" href="{% static 'img/apple-touch-icon.png' %}">
         <!-- Place favicon.ico in the root directory -->
 
+        <!-- HTML5 Boilerplate resets -->
         <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
 
         <!-- Material Design fonts -->
@@ -26,8 +26,12 @@
         <!-- Bootstrap Material Design -->
         <link rel="stylesheet" type="text/css" href="{% static 'css/vendor/bootstrap-material-design.min.css' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'css/vendor/ripples.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/h5bp.css' %}">
 
+        <!-- Project Stylesheets -->
         <link rel="stylesheet" href="{% static 'css/main.css' %}">
+
+        <!-- modernizr needs to actually run before anything else -->
         <script src="{% static 'js/vendor/modernizr-2.8.3.min.js' %}"></script>
 
     </head>
@@ -36,6 +40,7 @@
         <!--[if lt IE 8]>
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
+        {% block navigation %}{% include 'nav.html' %}{% endblock navigation %}
 
         {% block content %}
         {% endblock content %}
@@ -47,8 +52,8 @@
             );
         </script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-        <script src="{% static 'js/vendor/material.min.js' %}"></script>
         <script src="{% static 'js/vendor/ripples.min.js' %}"></script>
+        <script src="{% static 'js/vendor/material.min.js' %}"></script>
         <script src="{% static 'js/plugins.js' %}"></script>
         <script src="{% static 'js/main.js' %}"></script>
 
