@@ -1,5 +1,11 @@
-(function($) {
 
-    $.material.init();
+$(function() {
+  $.material.init();
 
-})(jQuery);
+  $('#id_login').blur();
+  $('#id_login').focus();
+
+  $('#login-modal').on('shown.bs.modal', function () {
+    $('#id_login').focus();
+  });
+})

@@ -9,21 +9,29 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">Project name</a>
+      <a class="navbar-brand" href="#">Project Name</a>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
-
-      <form class="navbar-form navbar-right" role="form">
-        <div class="form-group">
-          <input type="text" placeholder="Email" class="form-control">
-        </div>
-        <div class="form-group">
-          <input type="password" placeholder="Password" class="form-control">
-        </div>
-        <button type="submit" class="btn btn-primary btn-raised">login</button>
-      </form>
-
+      <div class="navbar-right navbar-account">
+        {% if request.user.is_authenticated %}
+          <button class="btn btn-link" type="button">
+          {% if request.user.first_name or request.user.last_name %}
+            {{ request.user.first_name }} {{ request.user.last_name }}
+          {% else %}
+            {{ request.user.username }}
+          {% endif %}
+          {% if request.user.profile.account_verified %}
+            (verified)
+          {% else %}
+            (unverified)
+          {% endif %}
+          </button>
+          <a class="btn btn-link pull-right" href="/accounts/logout/">Logout</a>
+        {% else %}
+          <button type="button" class="btn btn-link" data-toggle="modal" data-target="#login-modal">Sign In</button>
+        {% endif %}
+      </div>
     </div><!--/.navbar-collapse -->
   </div>
 
@@ -33,3 +41,41 @@
 </nav>
 
 <div class="navbar-fixed-spacer"></div>
+
+<div class="modal fade" id="login-modal">
+<div class="modal-dialog">
+<div class="modal-content">
+
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 class="modal-title">Sign In</h3>
+  </div>
+
+  <div class="modal-body">
+    {% include 'login_form.html' %}
+
+    <div class="form-group">
+      <input class="form-control" id="id_username" type="text" placeholder="Email">
+    </div>
+    <div class="form-group">
+      <input class="form-control" type="password" placeholder="Password">
+    </div>
+    <div class="form-group">
+      <div class="togglebutton sessionpersist">
+        <label>
+          <input type="checkbox">
+          <span>Remember Me</span>
+        </label>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn btn-raised btn-default" type="button" data-dismiss="modal">Cancel</button>
+    <button class="btn btn-raised btn-primary" type="submit">Sign In</button>
+  </div>
+
+</div>
+</div>
+</div>

@@ -26,7 +26,34 @@ SECRET_KEY = '%9+*7wr09e-(+_-b8#_z0_5*2ahy^==*@2+eo2c$vyiesj*$ku'
 DEBUG = True
 
 ALLOWED_HOSTS = []
+APPEND_SLASH = True
 
+# auth and allauth settings
+LOGIN_REDIRECT_URL = '/'
+# SOCIALACCOUNT_QUERY_EMAIL = True
+# SOCIALACCOUNT_PROVIDERS = {
+#     'facebook': {
+#         'SCOPE': ['email', 'publish_stream'],
+#         'METHOD': 'js_sdk',
+#     }
+# }
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': ('email', 'profile'),
+    }
+}
+ACCOUNT_FORMS = {
+    'login': 'updeight.main.forms.CrispyLoginForm',
+}
+
+AUTHENTICATION_BACKENDS = (
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+
+SITE_ID = 1
 
 # Application definition
 
@@ -37,9 +64,23 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
 
     'updeight',
     'updeight.main',
+
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    # 'allauth.socialaccount.providers.github',
+    # 'allauth.socialaccount.providers.dropbox',
+    # 'allauth.socialaccount.providers.dropbox_oauth2',
+    # 'allauth.socialaccount.providers.amazon',
+    # 'allauth.socialaccount.providers.digitalocean',
+    # 'allauth.socialaccount.providers.facebook',
+
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -57,7 +98,7 @@ ROOT_URLCONF = 'updeight.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'updeight/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -110,7 +151,7 @@ AUTH_PASSWORD_VALIDATORS = [
         ),
     },
 ]
-
+AUTH_PASSWORD_VALIDATORS = []
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
@@ -130,3 +171,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+
+CRISPY_TEMPLATE_PACK = 'bootstrap3'

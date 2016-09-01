@@ -1,6 +1,6 @@
 
-.content.container {
-    padding-top: 20px;
+.navbar .navbar-account {
+    padding: 2px;
 }
 
 .navbar .navbar-progress {
@@ -13,4 +13,21 @@
 
 .navbar-fixed-spacer {
     height: 64px;
+}
+
+.modal .modal-content form .form-group {
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+.modal .modal-content .modal-footer {
+    padding: 0px 24px 16px 24px;
+}
+
+.togglebutton.sessionpersist {
+    text-align: center;
+}
+
+.content.container {
+    padding-top: 20px;
 }

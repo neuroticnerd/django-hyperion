@@ -1,0 +1,14 @@
+{% extends "h5bp.html" %}
+
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+
+{% block content %}
+<div class="content container">
+  <h1>{% trans "Sign In" %}</h1>
+
+  {% include 'login_form.html' %}
+</div>
+{% endblock content %}
