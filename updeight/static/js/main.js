@@ -1,5 +1,6 @@
 
 $(function() {
+  $('.togglebutton').removeClass('checkbox');
   $.material.init();
 
   $('#id_login').blur();

@@ -9,7 +9,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">Project Name</a>
+      <a class="navbar-brand" href="{% url 'home' %}">Project Name</a>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
@@ -29,7 +29,9 @@
           </button>
           <a class="btn btn-link pull-right" href="/accounts/logout/">Logout</a>
         {% else %}
+          {% if render_login_modal %}
           <button type="button" class="btn btn-link" data-toggle="modal" data-target="#login-modal">Sign In</button>
+          {% endif %}
         {% endif %}
       </div>
     </div><!--/.navbar-collapse -->
@@ -42,40 +44,19 @@
 
 <div class="navbar-fixed-spacer"></div>
 
+{% if render_login_modal %}
 <div class="modal fade" id="login-modal">
-<div class="modal-dialog">
-<div class="modal-content">
+  <div class="modal-dialog">
+    <div class="modal-content">
 
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 class="modal-title">Sign In</h3>
-  </div>
-
-  <div class="modal-body">
-    {% include 'login_form.html' %}
-
-    <div class="form-group">
-      <input class="form-control" id="id_username" type="text" placeholder="Email">
-    </div>
-    <div class="form-group">
-      <input class="form-control" type="password" placeholder="Password">
-    </div>
-    <div class="form-group">
-      <div class="togglebutton sessionpersist">
-        <label>
-          <input type="checkbox">
-          <span>Remember Me</span>
-        </label>
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 class="modal-title">Sign In</h3>
       </div>
+
+      {% include 'login_form_modal.html' %}
+
     </div>
-
   </div>
-
-  <div class="modal-footer">
-    <button class="btn btn-raised btn-default" type="button" data-dismiss="modal">Cancel</button>
-    <button class="btn btn-raised btn-primary" type="submit">Sign In</button>
-  </div>
-
 </div>
-</div>
-</div>
+{% endif %}

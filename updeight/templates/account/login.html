@@ -7,8 +7,12 @@
 
 {% block content %}
 <div class="content container">
-  <h1>{% trans "Sign In" %}</h1>
+  <div class="panel panel-primary">
+    <div class="panel-heading">
+      <h1 class="panel-title">{% trans "Sign In" %}</h1>
+    </div>
 
-  {% include 'login_form.html' %}
+    {% include 'login_form_panel.html' %}
+  </div>
 </div>
 {% endblock content %}
