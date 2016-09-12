@@ -12,7 +12,7 @@ class CrispyLoginForm(LoginForm):
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.label_class = 'hidden'
-        self.helper.field_class = 'col-md-12'
+        self.helper.field_class = 'col-xs-12 col-sm-12 col-md-12 col-lg-8'
         self.helper.layout = Layout(
             'login',
             'password',
