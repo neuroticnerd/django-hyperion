@@ -9,6 +9,8 @@ __pycache__/
 # Database files
 *.sqlite3
 
+node_modules/
+
 # Distribution / packaging
 .Python
 env/

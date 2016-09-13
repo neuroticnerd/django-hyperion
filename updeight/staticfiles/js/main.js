@@ -1,6 +1,5 @@
 
 $(function() {
-
   // this makes sure that toggle buttons are styled correctly
   $('.togglebutton').removeClass('checkbox');
 
