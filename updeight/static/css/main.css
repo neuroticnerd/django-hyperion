@@ -28,7 +28,7 @@
   margin-top: 10px;
 }
 
-.togglebutton.sessionpersist {
+.modal .modal-body .togglebutton.sessionpersist {
   text-align: center;
 }
 
@@ -82,4 +82,8 @@
   width: 3em;
   text-align: center;
   vertical-align: middle;
+}
+
+.modal .modal-body label {
+  display: none;
 }

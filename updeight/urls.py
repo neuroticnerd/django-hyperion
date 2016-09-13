@@ -17,11 +17,13 @@ from __future__ import absolute_import, unicode_literals
 
 from django.conf.urls import include, url
 from django.contrib import admin
+from django.contrib.auth.views import logout as django_logout
 
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
+    url(r'^accounts/logout/$', django_logout, {'next_page': '/'}),
     url(r'^accounts/', include('allauth.urls')),
 
     url(r'^', include('updeight.main.urls')),
