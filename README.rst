@@ -1,4 +1,4 @@
-updeight
+HYPERION
 ===========
 
-News aggregation application
+Modern Django Project Template

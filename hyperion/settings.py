@@ -1,5 +1,5 @@
 """
-Django settings for updeight project.
+Django project settings.
 
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.10/ref/settings/
@@ -138,8 +138,8 @@ ALLOWED_HOSTS = env('ALLOWED_HOSTS', [])
 APPEND_SLASH = True
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
-ROOT_URLCONF = 'updeight.urls'
-WSGI_APPLICATION = 'updeight.wsgi.application'
+ROOT_URLCONF = 'hyperion.urls'
+WSGI_APPLICATION = 'hyperion.wsgi.application'
 # AUTH_USER_MODEL = 'accounts.User'
 
 
@@ -156,7 +156,7 @@ ACCOUNT_EMAIL_VERIFICATION = ifdebug('none', 'mandatory')
 # ACCOUNT_EMAIL_SUBJECT_PREFIX = '[Site] '
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = ifdebug('http', 'https')
 ACCOUNT_FORMS = {
-    'login': 'updeight.main.forms.CrispyLoginForm',
+    'login': 'hyperion.main.forms.CrispyLoginForm',
 }
 ACCOUNT_LOGIN_ATTEMPTS_LIMIT = ifdebug(None, 3)
 ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 900
@@ -301,8 +301,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
 
-    'updeight',
-    'updeight.main',
+    'hyperion',
+    'hyperion.main',
 
     'allauth',
     'allauth.account',
@@ -345,7 +345,7 @@ DJANGO_TEMPLATES_CONFIG = {
             'django.template.context_processors.request',
             'django.contrib.auth.context_processors.auth',
             'django.contrib.messages.context_processors.messages',
-            'updeight.main.context_processors.login_context',
+            'hyperion.main.context_processors.login_context',
         ),
         'debug': env('TEMPLATE_DEBUG', DEBUG),
     },

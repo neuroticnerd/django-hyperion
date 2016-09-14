@@ -1,4 +1,5 @@
-"""updeight URL Configuration
+"""
+Django URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.10/topics/http/urls/
@@ -26,5 +27,5 @@ urlpatterns = [
     url(r'^accounts/logout/$', django_logout, {'next_page': '/'}),
     url(r'^accounts/', include('allauth.urls')),
 
-    url(r'^', include('updeight.main.urls')),
+    url(r'^', include('hyperion.main.urls')),
 ]
