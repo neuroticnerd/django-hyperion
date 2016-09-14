@@ -2,17 +2,77 @@
 
 {% load i18n %}
 {% load account socialaccount %}
+{% load account crispy_forms_tags socialaccount %}
+
+{% get_providers as socialaccount_providers %}
 
 {% block head_title %}{% trans "Sign In" %}{% endblock %}
 
 {% block content %}
+
 <div class="content container">
-  <div class="panel panel-primary">
-    <div class="panel-heading">
-      <h1 class="panel-title">{% trans "Sign In" %}</h1>
+<div class="well">
+<div class="container-fluid">
+
+  <div class="row text-center">
+    <h4 class="">{% trans "Sign In" %}</h4>
+  </div>
+
+  <form class="login form-horizontal" role="form" method="POST" action="{% url 'account_login' %}">
+
+  <div class="row">
+
+    <div class="container-fluid">
+    {% if socialaccount_providers %}
+
+      <div class="socialaccount_ballot">
+        <div class="socialaccount_providers text-center">
+          {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+        </div>
+      </div>
+      {% include "socialaccount/snippets/login_extra.html" %}
+
+      <div class="row hr-or">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <hr class="hr-or-hr">
+          <span class="hr-or-span">{% trans 'or' %}</span>
+        </div>
+      </div>
+
+    {% endif %}
     </div>
 
-    {% include 'login_form_panel.html' %}
+    <div class="container-fluid">
+      {% if login_form %}
+        {% crispy login_form %}
+      {% else %}
+        {% crispy form %}
+      {% endif %}
+      {% if redirect_field_value %}
+      <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+      {% endif %}
+    </div>
+
   </div>
-</div>
+
+  <div class="row text-center">
+    <a class="btn btn-info" href="{% url 'account_reset_password' %}">
+      {% trans "forgot your password?" %}
+    </a>
+    <a class="btn btn-info" href="{{ signup_url }}">
+      {% trans 'create an account' %}
+    </a>
+  </div>
+  <div class="row text-center">
+    <button class="btn btn-raised btn-primary" type="submit">
+      {% trans "Sign In" %}
+    </button>
+  </div>
+
+  </form>
+
+</div><!-- /.container-fluid -->
+</div><!-- /.well -->
+</div><!-- /.container -->
+
 {% endblock content %}

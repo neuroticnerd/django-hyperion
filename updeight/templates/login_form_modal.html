@@ -1,9 +1,77 @@
-{% extends 'login_form.html' %}
+{% load i18n %}
+{% load account crispy_forms_tags socialaccount %}
 
-{% block form_content_class %}modal-body{% endblock form_content_class %}
+{% get_providers as socialaccount_providers %}
 
-{% block form_body_class %}row{% endblock form_body_class %}
+<div class="modal fade" id="login-modal" role="dialog" aria-labelledby="login-modal-title">
+<div class="modal-dialog" role="document">
+<div class="modal-content">
 
-{% block form_oauth_class %}{% endblock form_oauth_class %}
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <h4 class="modal-title" id="login-modal-title">Sign In</h4>
+  </div>
 
-{% block form_buttons_class %}modal-footer{% endblock form_buttons_class %}
+  <form class="login form-horizontal" role="form" method="POST" action="{% url 'account_login' %}">
+
+  <div class="modal-body">
+
+    <div class="">
+    {% if socialaccount_providers %}
+
+      <div class="socialaccount_ballot">
+        <div class="socialaccount_providers text-center">
+          {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+        </div>
+      </div>
+      {% include "socialaccount/snippets/login_extra.html" %}
+
+      <div class="row hr-or">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <hr class="hr-or-hr">
+          <span class="hr-or-span">{% trans 'or' %}</span>
+        </div>
+      </div>
+
+    {% endif %}
+    </div>
+
+    <div class="row">
+      {% if login_form %}
+        {% crispy login_form %}
+      {% else %}
+        {% crispy form %}
+      {% endif %}
+      {% if redirect_field_value %}
+      <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+      {% endif %}
+    </div>
+
+    <div class="text-center">
+      <a class="btn btn-info" href="{% url 'account_reset_password' %}">
+        {% trans "forgot your password?" %}
+      </a>
+
+      <a class="btn btn-info" href="{{ signup_url }}">
+        {% trans 'create an account' %}
+      </a>
+    </div>
+
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn btn-default" type="button" data-dismiss="modal">
+      {% trans "Cancel" %}
+    </button>
+    <button class="btn btn-raised btn-primary" type="submit">
+      {% trans "Sign In" %}
+    </button>
+  </div>
+
+  </form>
+
+</div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

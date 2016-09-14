@@ -3,58 +3,63 @@
 <!doctype html>
 <html class="no-js" lang="">
 
-    <head>
+  <head>
 
-        <meta charset="utf-8">
-        <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>YOUR PROJECT TITLE HERE</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="apple-touch-icon" href="{% static 'img/apple-touch-icon.png' %}">
-        <!-- Place favicon.ico in the root directory -->
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>{% block head_title %}Home{% endblock head_title %}</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="apple-touch-icon" href="{% static 'img/apple-touch-icon.png' %}">
+    <!-- Place favicon.ico in the root directory -->
 
-        <!-- HTML5 Boilerplate resets -->
-        <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
-        <link rel="stylesheet" href="{% static 'css/h5bp.css' %}">
+    <!-- HTML5 Boilerplate resets -->
+    <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
+    <link rel="stylesheet" href="{% static 'css/h5bp.css' %}">
 
-        <!-- Font Awesome + Material Design Fonts -->
-        <link rel="stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
-        <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
-        <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <!-- Font Awesome + Material Design Fonts -->
+    <link rel="stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
-        <!-- Bootstrap v3.3.7 via CDN -->
-        <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-        <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous"> -->
+    <!-- Bootstrap v3.3.7 via CDN -->
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous"> -->
 
-        <!-- Project Stylesheets -->
-        <link rel="stylesheet" type="text/css" href="{% static 'css/updeight.css' %}">
+    <!-- Project Stylesheets -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/updeight.css' %}">
 
-        <!-- modernizr needs to actually run before anything else -->
-        <script src="{% static 'js/vendor/modernizr-2.8.3.min.js' %}"></script>
+    <!-- modernizr needs to actually run before anything else -->
+    <script src="{% static 'js/vendor/modernizr-2.8.3.min.js' %}"></script>
 
-    </head>
+  </head>
 
-    <body>
-        <!--[if lt IE 8]>
-            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
-        {% block navigation %}{% include 'nav.html' %}{% endblock navigation %}
+  <body>
 
-        {% block content %}
-        {% endblock content %}
+    <!--[if lt IE 8]>
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+    <header>
+    {% block navigation %}
+        {% include 'nav.html' %}
+    {% endblock navigation %}
+    </header>
 
-        <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
-        <script>
-            window.jQuery || document.write(
-                '<script src="{% static "js/vendor/jquery-1.12.0.min.js" %}"><\/script>'
-            );
-        </script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-        <script src="{% static 'js/vendor/ripples.min.js' %}"></script>
-        <script src="{% static 'js/vendor/material.min.js' %}"></script>
-        <script src="{% static 'js/plugins.js' %}"></script>
-        <script src="{% static 'js/main.js' %}"></script>
+    {% block content %}
+    {% endblock content %}
 
-    </body>
+    <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+    <script>
+        window.jQuery || document.write(
+            '<script src="{% static "js/vendor/jquery-1.12.0.min.js" %}"><\/script>'
+        );
+    </script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="{% static 'js/vendor/ripples.min.js' %}"></script>
+    <script src="{% static 'js/vendor/material.min.js' %}"></script>
+    <script src="{% static 'js/plugins.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+
+  </body>
 
 </html>
