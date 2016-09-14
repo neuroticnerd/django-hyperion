@@ -429,10 +429,7 @@ USE_TZ = True
 STATIC_ROOT = env('STATIC_ROOT', 'static')
 STATIC_URL = env('STATIC_URL', '/static/')
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'staticfiles/css'),
-    os.path.join(BASE_DIR, 'staticfiles/fonts'),
-    os.path.join(BASE_DIR, 'staticfiles/img'),
-    os.path.join(BASE_DIR, 'staticfiles/js'),
+    os.path.join(BASE_DIR, 'staticfiles'),
 )
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
