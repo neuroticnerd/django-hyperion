@@ -16,7 +16,7 @@ from armory.environ import env
 # -----------------------------------------------------------------------------
 # the DEBUG var is used to determine the value of a number of further vars
 
-DEBUG = env('DEBUG', False, bool, boolmap=True)
+DEBUG = env('DEBUG', False, cast=bool, boolmap=True)
 
 
 def ifdebug(debug_true, normal=None):
@@ -29,6 +29,7 @@ def ifdebug(debug_true, normal=None):
 
 LOGGING_LEVEL = env('LOGGING_LEVEL', 'INFO')
 DB_LOGGING_LEVEL = env('DB_LOGGING_LEVEL', 'WARNING')
+TEMPLATE_LOGGING_LEVEL = env('TEMPLATE_LOGGING_LEVEL', LOGGING_LEVEL)
 LOGGING_CONFIG = None
 LOGGING = {
     'version': 1,
@@ -98,6 +99,11 @@ LOGGING = {
             'handlers': ['admin_emails'],
             'propagate': True,
         },
+        'django.template': {
+            'level': TEMPLATE_LOGGING_LEVEL,
+            'handlers': ['console'],
+            'propagate': False,
+        },
         'elasticsearch.trace': {
             'level': 'WARNING',
             'handlers': ['console'],
@@ -134,23 +140,39 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 ROOT_URLCONF = 'updeight.urls'
 WSGI_APPLICATION = 'updeight.wsgi.application'
+# AUTH_USER_MODEL = 'accounts.User'
 
 
 # -----------------------------------------------------------------------------
 # django-allauth settings
 
+# ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = True
 ACCOUNT_AUTHENTICATION_METHOD = 'username'  # 'username_email'
+# ACCOUNT_CONFIRM_EMAIL_ON_GET = False
+# ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
+# ACCOUNT_EMAIL_CONFIRMATION_HMAC = True
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = ifdebug('none', 'mandatory')
+# ACCOUNT_EMAIL_SUBJECT_PREFIX = '[Site] '
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = ifdebug('http', 'https')
 ACCOUNT_FORMS = {
     'login': 'updeight.main.forms.CrispyLoginForm',
 }
 ACCOUNT_LOGIN_ATTEMPTS_LIMIT = ifdebug(None, 3)
 ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 900
+# ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = False
+# ACCOUNT_LOGOUT_ON_GET = False
+# ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 ACCOUNT_SIGNUP_EMAIL_ENTER_TWICE = True
+# ACCOUNT_SIGNUP_FORM_CLASS = None
+# ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = True
+# ACCOUNT_USERNAME_BLACKLIST = []
+# ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_MIN_LENGTH = env('USERNAME_MIN_LENGTH', 3)
+# ACCOUNT_USERNAME_REQUIRED = True
 
+# SOCIALACCOUNT_ADAPTER = default
+# SOCIALACCOUNT_FORMS = {}
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': ('email', 'profile'),
@@ -161,6 +183,8 @@ SOCIALACCOUNT_PROVIDERS = {
     #     'METHOD': 'js_sdk',
     # },
 }
+# SOCIALACCOUNT_QUERY_EMAIL = ACCOUNT_EMAIL_REQUIRED
+# SOCIALACCOUNT_STORE_TOKENS = True
 
 
 # -----------------------------------------------------------------------------
@@ -206,26 +230,41 @@ AUTH_PASSWORD_VALIDATORS = ifdebug([], (
 # -----------------------------------------------------------------------------
 # SSL/TSL security and sessions settings
 
-SECURE_SSL_REDIRECT = env('SECURE_SSL_REDIRECT', ifdebug(False, True))
-SECURE_BROWSER_XSS_FILTER = env('SECURE_BROWSER_XSS_FILTER', True)
-SECURE_CONTENT_TYPE_NOSNIFF = env('SECURE_CONTENT_TYPE_NOSNIFF', True)
+SECURE_SSL_REDIRECT = env(
+    'SECURE_SSL_REDIRECT', ifdebug(False, True), cast=bool, boolmap=True
+)
+SECURE_BROWSER_XSS_FILTER = env(
+    'SECURE_BROWSER_XSS_FILTER', True, cast=bool, boolmap=True
+)
+SECURE_CONTENT_TYPE_NOSNIFF = env(
+    'SECURE_CONTENT_TYPE_NOSNIFF', True, cast=bool, boolmap=True
+)
 # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# USE_X_FORWARDED_HOST = False
 X_FRAME_OPTIONS = env('X_FRAME_OPTIONS', 'DENY')
 
 if SECURE_SSL_REDIRECT:
-    SESSION_COOKIE_SECURE = env('SESSION_COOKIE_SECURE', True)
+    SESSION_COOKIE_SECURE = env(
+        'SESSION_COOKIE_SECURE', True, cast=bool, boolmap=True
+    )
     SECURE_HSTS_SECONDS = env('SECURE_HSTS_SECONDS', 3600)
     SECURE_HSTS_INCLUDE_SUBDOMAINS = env(
-        'SECURE_HSTS_INCLUDE_SUBDOMAINS', True
+        'SECURE_HSTS_INCLUDE_SUBDOMAINS', True, cast=bool, boolmap=True
     )
-    CSRF_COOKIE_SECURE = env('CSRF_COOKIE_SECURE', True)
+    CSRF_COOKIE_SECURE = env(
+        'CSRF_COOKIE_SECURE', True, cast=bool, boolmap=True
+    )
 else:
-    SESSION_COOKIE_SECURE = env('SESSION_COOKIE_SECURE', False)
+    SESSION_COOKIE_SECURE = env(
+        'SESSION_COOKIE_SECURE', False, cast=bool, boolmap=True
+    )
     SECURE_HSTS_SECONDS = env('SECURE_HSTS_SECONDS', 0)
     SECURE_HSTS_INCLUDE_SUBDOMAINS = env(
-        'SECURE_HSTS_INCLUDE_SUBDOMAINS', False
+        'SECURE_HSTS_INCLUDE_SUBDOMAINS', False, cast=bool, boolmap=True
     )
-    CSRF_COOKIE_SECURE = env('CSRF_COOKIE_SECURE', False)
+    CSRF_COOKIE_SECURE = env(
+        'CSRF_COOKIE_SECURE', False, cast=bool, boolmap=True
+    )
 
 SESSION_CACHE_ALIAS = env('SESSION_CACHE_ALIAS', 'default')
 SESSION_COOKIE_AGE = env('SESSION_COOKIE_AGE', 3600, int)
@@ -235,7 +274,12 @@ SESSION_ENGINE = env(
     'SESSION_ENGINE',
     'django.contrib.sessions.backends.cached_db'
 )
-SESSION_EXPIRE_AT_BROWSER_CLOSE = env('SESSION_EXPIRE_AT_BROWSER_CLOSE', False)
+SESSION_EXPIRE_AT_BROWSER_CLOSE = env(
+    'SESSION_EXPIRE_AT_BROWSER_CLOSE',
+    False,
+    cast=bool,
+    boolmap=True
+)
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
 
@@ -296,13 +340,14 @@ DJANGO_TEMPLATES_CONFIG = {
     ],
     'APP_DIRS': True,
     'OPTIONS': {
-        'context_processors': [
+        'context_processors': (
             'django.template.context_processors.debug',
             'django.template.context_processors.request',
             'django.contrib.auth.context_processors.auth',
             'django.contrib.messages.context_processors.messages',
             'updeight.main.context_processors.login_context',
-        ],
+        ),
+        'debug': env('TEMPLATE_DEBUG', DEBUG),
     },
 }
 if DEBUG is False:
@@ -318,6 +363,37 @@ if DEBUG is False:
         ]),
     )
 TEMPLATES = [
+    # {
+    #     'BACKEND': 'django_jinja.backend.Jinja2',
+    #     'DIRS': [path('jinja2')],
+    #     'APP_DIRS': True,
+    #     'OPTIONS': {
+    #         # Use jinja2/ for jinja templates
+    #         'app_dirname': 'jinja2',
+    #         # Don't figure out which template loader to use based on
+    #         # file extension
+    #         'match_extension': '',
+    #         'newstyle_gettext': True,
+    #         'context_processors': _CONTEXT_PROCESSORS,
+    #         'undefined': 'jinja2.Undefined',
+    #         'extensions': [
+    #             'jinja2.ext.do',
+    #             'jinja2.ext.loopcontrols',
+    #             'jinja2.ext.with_',
+    #             'jinja2.ext.i18n',
+    #             'jinja2.ext.autoescape',
+    #             'puente.ext.i18n',
+    #             'django_jinja.builtins.extensions.CsrfExtension',
+    #             'django_jinja.builtins.extensions.CacheExtension',
+    #             'django_jinja.builtins.extensions.TimezoneExtension',
+    #             'django_jinja.builtins.extensions.UrlsExtension',
+    #             'django_jinja.builtins.extensions.StaticFilesExtension',
+    #             'django_jinja.builtins.extensions.DjangoFiltersExtension',
+    #             'pipeline.jinja2.PipelineExtension',
+    #             'waffle.jinja.WaffleExtension',
+    #         ],
+    #     }
+    # },
     DJANGO_TEMPLATES_CONFIG,
 ]
 
@@ -337,8 +413,8 @@ DATABASES = {
 # -----------------------------------------------------------------------------
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
+ENABLE_TRANSLATION = env('ENABLE_TRANSLATION', False, cast=bool, boolmap=True)
 DEFAULT_LANGUAGE = 'en'
-ENABLE_TRANSLATION = env('ENABLE_TRANSLATION', False)
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
@@ -352,21 +428,15 @@ USE_TZ = True
 
 STATIC_ROOT = env('STATIC_ROOT', 'static')
 STATIC_URL = env('STATIC_URL', '/static/')
-
-# Additional locations of static files
 STATICFILES_DIRS = (
-    # Put strings here, like "/home/html/static" or "C:/www/django/static".
-    # Always use forward slashes, even on Windows.  Don't forget to use
-    # absolute paths, not relative paths.
-    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'staticfiles/css'),
+    os.path.join(BASE_DIR, 'staticfiles/fonts'),
+    os.path.join(BASE_DIR, 'staticfiles/img'),
+    os.path.join(BASE_DIR, 'staticfiles/js'),
 )
-# List of finder classes that know how to find static files in various
-# locations.
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
-    # 'compressor.finders.CompressorFinder',
 )
 
 # Special value, unique per deploy/code-revision, which is used to guarantee
@@ -381,4 +451,3 @@ MEDIA_URL = env('MEDIA_URL', '/media/')
 # django-crispy-forms
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
-
