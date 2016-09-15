@@ -4,4 +4,4 @@
 export DEBUG="True"
 export TEMPLATE_DEBUG="True"
 export TEMPLATE_LOGGING_LEVEL="WARNING"
-./manage.py runserver
+./manage.py runserver $@

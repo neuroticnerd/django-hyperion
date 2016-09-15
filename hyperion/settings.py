@@ -16,7 +16,7 @@ from armory.environ import env
 # -----------------------------------------------------------------------------
 # the DEBUG var is used to determine the value of a number of further vars
 
-DEBUG = env('DEBUG', False, cast=bool, boolmap=True)
+DEBUG = env('DEBUG', False, cast=bool)
 
 
 def ifdebug(debug_true, normal=None):
@@ -112,6 +112,9 @@ LOGGING = {
     }
 }
 logging.config.dictConfig(LOGGING)
+log = logging.getLogger(__name__)
+if DEBUG is True:
+    log.warning('DEBUG mode is enabled!')
 
 
 # -----------------------------------------------------------------------------
@@ -141,6 +144,68 @@ LOGOUT_REDIRECT_URL = '/'
 ROOT_URLCONF = 'hyperion.urls'
 WSGI_APPLICATION = 'hyperion.wsgi.application'
 # AUTH_USER_MODEL = 'accounts.User'
+SITE_ID = env('SITE_ID', 1, int)
+
+
+# -----------------------------------------------------------------------------
+# Caching
+# https://docs.djangoproject.com/en/1.10/ref/settings/#caches
+# https://niwinz.github.io/django-redis/latest/
+
+# local default can be 'redis://127.0.0.1:6379/0'
+# redis://[:password]@localhost:6379/0
+# rediss://[:password]@localhost:6379/0
+# unix://[:password]@/path/to/socket.sock?db=0
+REDIS_URL = env('REDIS_URL', None)
+REDIS_ENABLED = env('REDIS_ENABLED', bool(REDIS_URL), cast=bool)
+if REDIS_URL and REDIS_ENABLED:
+    HIREDIS_PARSER = 'redis.connection.HiredisParser'
+    REDIS_HIREDIS = env('REDIS_HIREDIS', True, cast=bool)
+    REDIS_CACHE_CONF = {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': REDIS_URL,
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            'SOCKET_CONNECT_TIMEOUT': 5,
+            'SOCKET_TIMEOUT': 5,
+        },
+    }
+    if REDIS_HIREDIS is True:
+        REDIS_CACHE_CONF['OPTIONS']['PARSER_CLASS'] = HIREDIS_PARSER
+    CACHE_VERSION = env('CACHE_VERSION', None, cast=int)
+    if CACHE_VERSION is not None:
+        REDIS_CACHE_CONF['VERSION'] = CACHE_VERSION
+    CACHES = {'default': REDIS_CACHE_CONF}
+else:
+    log.warning('Using default cache backend!')
+
+
+# -----------------------------------------------------------------------------
+# Database
+# https://docs.djangoproject.com/en/1.10/ref/settings/#databases
+
+POSTGRES_URL = env('POSTGRES_URL', None)
+POSTGRES_ENABLED = env('POSTGRES_ENABLED', bool(POSTGRES_URL), cast=bool)
+if POSTGRES_ENABLED:
+    DEFAULT_DATABASE = {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env('POSTGRES_DB_NAME'),
+        'USER': env('POSTGRES_USER'),
+        'PASSWORD': env('POSTGRES_PASSWORD', ''),
+        'HOST': env('POSTGRES_HOST', '127.0.0.1'),
+        'PORT': env('POSTGRES_PORT', '5432'),
+    }
+else:
+    DEFAULT_SQLITE_FILE = os.path.join(os.path.dirname(BASE_DIR), 'db.sqlite3')
+    DEFAULT_DATABASE = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': env('SQLITE_FILE_PATH', DEFAULT_SQLITE_FILE),
+    }
+    log.warning('Defaulted to sqlite3 DB ({0})!'.format(DEFAULT_SQLITE_FILE))
+
+DATABASES = {
+    'default': DEFAULT_DATABASE,
+}
 
 
 # -----------------------------------------------------------------------------
@@ -231,40 +296,30 @@ AUTH_PASSWORD_VALIDATORS = ifdebug([], (
 # SSL/TSL security and sessions settings
 
 SECURE_SSL_REDIRECT = env(
-    'SECURE_SSL_REDIRECT', ifdebug(False, True), cast=bool, boolmap=True
+    'SECURE_SSL_REDIRECT', ifdebug(False, True), cast=bool
 )
-SECURE_BROWSER_XSS_FILTER = env(
-    'SECURE_BROWSER_XSS_FILTER', True, cast=bool, boolmap=True
-)
+SECURE_BROWSER_XSS_FILTER = env('SECURE_BROWSER_XSS_FILTER', True, cast=bool)
 SECURE_CONTENT_TYPE_NOSNIFF = env(
-    'SECURE_CONTENT_TYPE_NOSNIFF', True, cast=bool, boolmap=True
+    'SECURE_CONTENT_TYPE_NOSNIFF', True, cast=bool
 )
 # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # USE_X_FORWARDED_HOST = False
 X_FRAME_OPTIONS = env('X_FRAME_OPTIONS', 'DENY')
 
 if SECURE_SSL_REDIRECT:
-    SESSION_COOKIE_SECURE = env(
-        'SESSION_COOKIE_SECURE', True, cast=bool, boolmap=True
-    )
+    SESSION_COOKIE_SECURE = env('SESSION_COOKIE_SECURE', True, cast=bool)
     SECURE_HSTS_SECONDS = env('SECURE_HSTS_SECONDS', 3600)
     SECURE_HSTS_INCLUDE_SUBDOMAINS = env(
-        'SECURE_HSTS_INCLUDE_SUBDOMAINS', True, cast=bool, boolmap=True
+        'SECURE_HSTS_INCLUDE_SUBDOMAINS', True, cast=bool
     )
-    CSRF_COOKIE_SECURE = env(
-        'CSRF_COOKIE_SECURE', True, cast=bool, boolmap=True
-    )
+    CSRF_COOKIE_SECURE = env('CSRF_COOKIE_SECURE', True, cast=bool)
 else:
-    SESSION_COOKIE_SECURE = env(
-        'SESSION_COOKIE_SECURE', False, cast=bool, boolmap=True
-    )
+    SESSION_COOKIE_SECURE = env('SESSION_COOKIE_SECURE', False, cast=bool)
     SECURE_HSTS_SECONDS = env('SECURE_HSTS_SECONDS', 0)
     SECURE_HSTS_INCLUDE_SUBDOMAINS = env(
-        'SECURE_HSTS_INCLUDE_SUBDOMAINS', False, cast=bool, boolmap=True
+        'SECURE_HSTS_INCLUDE_SUBDOMAINS', False, cast=bool
     )
-    CSRF_COOKIE_SECURE = env(
-        'CSRF_COOKIE_SECURE', False, cast=bool, boolmap=True
-    )
+    CSRF_COOKIE_SECURE = env('CSRF_COOKIE_SECURE', False, cast=bool)
 
 SESSION_CACHE_ALIAS = env('SESSION_CACHE_ALIAS', 'default')
 SESSION_COOKIE_AGE = env('SESSION_COOKIE_AGE', 3600, int)
@@ -275,18 +330,14 @@ SESSION_ENGINE = env(
     'django.contrib.sessions.backends.cached_db'
 )
 SESSION_EXPIRE_AT_BROWSER_CLOSE = env(
-    'SESSION_EXPIRE_AT_BROWSER_CLOSE',
-    False,
-    cast=bool,
-    boolmap=True
+    'SESSION_EXPIRE_AT_BROWSER_CLOSE', False, cast=bool
 )
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
-
-# -----------------------------------------------------------------------------
-# site-specific configuration
-
-SITE_ID = env('SITE_ID', 1, int)
+CSRF_COOKIE_AGE = env('CSRF_COOKIE_AGE', 3600, cast=int)
+# CSRF_COOKIE_DOMAIN = '.example.com'
+CSRF_COOKIE_HTTPONLY = env('CSRF_COOKIE_HTTPONLY', True, cast=bool)
+# CSRF_FAILURE_VIEW = 'hyperion.main.views.csrf_failure'
 
 
 # -----------------------------------------------------------------------------
@@ -333,20 +384,22 @@ MIDDLEWARE = [
 # -----------------------------------------------------------------------------
 # templates configuration
 
+_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'django.template.context_processors.debug',
+    'django.template.context_processors.request',
+    'django.contrib.messages.context_processors.messages',
+    'hyperion.main.context_processors.login_context',
+)
 DJANGO_TEMPLATES_CONFIG = {
+    'NAME': 'django',
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
     'DIRS': [
         os.path.join(BASE_DIR, 'templates')
     ],
     'APP_DIRS': True,
     'OPTIONS': {
-        'context_processors': (
-            'django.template.context_processors.debug',
-            'django.template.context_processors.request',
-            'django.contrib.auth.context_processors.auth',
-            'django.contrib.messages.context_processors.messages',
-            'hyperion.main.context_processors.login_context',
-        ),
+        'context_processors': _CONTEXT_PROCESSORS,
         'debug': env('TEMPLATE_DEBUG', DEBUG),
     },
 }
@@ -362,58 +415,52 @@ if DEBUG is False:
             'django.template.loaders.app_directories.Loader',
         ]),
     )
-TEMPLATES = [
-    # {
-    #     'BACKEND': 'django_jinja.backend.Jinja2',
-    #     'DIRS': [path('jinja2')],
-    #     'APP_DIRS': True,
-    #     'OPTIONS': {
-    #         # Use jinja2/ for jinja templates
-    #         'app_dirname': 'jinja2',
-    #         # Don't figure out which template loader to use based on
-    #         # file extension
-    #         'match_extension': '',
-    #         'newstyle_gettext': True,
-    #         'context_processors': _CONTEXT_PROCESSORS,
-    #         'undefined': 'jinja2.Undefined',
-    #         'extensions': [
-    #             'jinja2.ext.do',
-    #             'jinja2.ext.loopcontrols',
-    #             'jinja2.ext.with_',
-    #             'jinja2.ext.i18n',
-    #             'jinja2.ext.autoescape',
-    #             'puente.ext.i18n',
-    #             'django_jinja.builtins.extensions.CsrfExtension',
-    #             'django_jinja.builtins.extensions.CacheExtension',
-    #             'django_jinja.builtins.extensions.TimezoneExtension',
-    #             'django_jinja.builtins.extensions.UrlsExtension',
-    #             'django_jinja.builtins.extensions.StaticFilesExtension',
-    #             'django_jinja.builtins.extensions.DjangoFiltersExtension',
-    #             'pipeline.jinja2.PipelineExtension',
-    #             'waffle.jinja.WaffleExtension',
-    #         ],
-    #     }
-    # },
-    DJANGO_TEMPLATES_CONFIG,
-]
-
-
-# -----------------------------------------------------------------------------
-# Database
-# https://docs.djangoproject.com/en/1.10/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(os.path.dirname(BASE_DIR), 'db.sqlite3'),
-    }
+JINJA2_TEMPLATES_CONFIG = {
+    'NAME': 'jinja2',
+    'BACKEND': 'django_jinja.backend.Jinja2',
+    'DIRS': [
+        os.path.join(BASE_DIR, 'templates')
+    ],
+    'APP_DIRS': True,
+    'OPTIONS': {
+        'match_extension': None,
+        'match_regex': r'^(?!admin/).*\.jinja$',
+        'app_dirname': 'jinja2',
+        'context_processors': _CONTEXT_PROCESSORS,
+        'constants': {},
+        'globals': {},
+        'filters': {},
+        'extensions': (
+            'jinja2.ext.do',
+            'jinja2.ext.loopcontrols',
+            'jinja2.ext.with_',
+            'jinja2.ext.i18n',
+            'jinja2.ext.autoescape',
+            'django_jinja.builtins.extensions.CsrfExtension',
+            'django_jinja.builtins.extensions.CacheExtension',
+            'django_jinja.builtins.extensions.TimezoneExtension',
+            'django_jinja.builtins.extensions.UrlsExtension',
+            'django_jinja.builtins.extensions.StaticFilesExtension',
+            'django_jinja.builtins.extensions.DjangoFiltersExtension',
+            'django_jinja.builtins.extensions.DjangoExtraFiltersExtension',
+        ),
+        'autoescape': True,
+        'auto_reload': DEBUG,
+        'translation_engine': 'django.utils.translation',
+        'undefined': 'jinja2.Undefined',
+        'newstyle_gettext': True,
+    },
 }
+TEMPLATES = [
+    DJANGO_TEMPLATES_CONFIG,
+    JINJA2_TEMPLATES_CONFIG,
+]
 
 
 # -----------------------------------------------------------------------------
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
-ENABLE_TRANSLATION = env('ENABLE_TRANSLATION', False, cast=bool, boolmap=True)
+ENABLE_TRANSLATION = env('ENABLE_TRANSLATION', False, cast=bool)
 DEFAULT_LANGUAGE = 'en'
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'

@@ -1,9 +1,15 @@
-armory==0.1.2
+armory==0.1.3
 defusedxml==0.4.1
 Django==1.10
 django-allauth==0.27.0
 django-crispy-forms==1.6.0
+django-jinja==2.2.1
+django-redis==4.4.4
+hiredis==0.2.0
+jinja2==2.8
 oauthlib==1.1.2
+psycopg2==2.6.2
 python3-openid==3.0.10
+redis==2.10.5
 requests==2.11.1
 requests-oauthlib==0.6.2
