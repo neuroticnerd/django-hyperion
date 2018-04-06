@@ -11,7 +11,7 @@ import logging.config
 import os
 import sys
 
-from armory.environ import env
+from armory.utils import env
 
 # -----------------------------------------------------------------------------
 # the DEBUG var is used to determine the value of a number of further vars
